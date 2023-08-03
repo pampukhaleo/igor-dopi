@@ -1,26 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import './App.css';
+import { Todo } from './Todo';
+
+export type DataPropsType = {
+  userId: number
+  id: number
+  title: string
+  completed: boolean
+  onChangeHandler: (id: number) => void
+}
 
 function App() {
+
+  const [data, setData] = useState<DataPropsType[]>([]);
+
+  const onChange = (id: number, status: boolean) => {
+    setData(prevState => {
+      return prevState.map(el => {
+        if (el.id === id) {
+          return {
+            ...el,
+            completed: status
+          }
+        }
+        return el
+      })
+    })
+  }
+
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/todos/')
+      .then(response => response.json())
+      .then(json => setData(json))
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ul>
+        {data.length && data.map(el => {
+          return (
+            <Todo {...el} callBack={onChange}/>
+          )
+        })}
+      </ul>
     </div>
   );
 }
 
 export default App;
+
