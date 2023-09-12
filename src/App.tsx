@@ -7,6 +7,7 @@ import { useWindowSize } from './helpers/useWindowSize';
 function App() {
   const size = useWindowSize()
 
+  console.log('app rendered')
   return (
     <>
       <div className={ styles.header }><h1>HEADER</h1></div>
